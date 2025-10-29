@@ -83,10 +83,69 @@ for i in range (10):
     counties_by_poverty_list=counties_by_poverty_list[:index] + counties_by_poverty_list[index+1:]
 print(table_three)
 
+def printTableBy(df: pd.DataFrame, field: str, how_many: int, title: str):
+    """
+    Prints a PrettyTable of the top and bottom 'how_many' counties
+    based on a chosen field (e.g., 'poverty17_21', 'income21', or 'three_yr_avg_unemp_rate19_21').
 
+    Parameters:
+    df (pd.DataFrame): The DataFrame containing county-level economic data.
+             
+    field (str): Column name to sort by (e.g., 'poverty17_21', 'income21',or 'three_yr_avg_unemp_rate19_21').
+    
+    how_many (int): Number of top and bottom rows to include in the output. 
+    
+    
+    title (str): Title printed above the PrettyTable.   
 
+    Returns: N/A
+    """
 
+    # Sort by selected column 
+    df_sorted = df.sort_values(by=field, ascending=False)
 
+    # Get top and bottom rows
+    top = df_sorted.head(how_many)
+    bottom = df_sorted.tail(how_many).sort_values(by=field, ascending=True)
+
+    # Create the PrettyTable
+    table = pt()
+    table.field_names = ["State", "County", "PCI", "Poverty Rate", "Avg Unemployment"]
+
+    # Print the title
+    print(title)
+
+    # Add top rows
+    for _, row in top.iterrows():
+        table.add_row([
+            f"{row['state']:<20}",
+            f"{row['county']:<20}",
+            f"{row['income21']:.2f}",
+            f"{row['poverty17_21']:.2f}",
+            f"{row['three_yr_avg_unemp_rate19_21']:.2f}"
+        ])
+
+    # Add a divider row
+    table.add_row([""] * len(table.field_names), divider=True)
+
+    # Add bottom rows
+    for _, row in bottom.iterrows():
+        table.add_row([
+            f"{row['state']:<20}",
+            f"{row['county']:<20}",
+            f"{row['income21']:.2f}",
+            f"{row['poverty17_21']:.2f}",
+            f"{row['three_yr_avg_unemp_rate19_21']:.2f}"
+        ])
+
+    # Print the table
+    print(table)
+
+#Call printTableBy function
+
+printTableBy(df, field="poverty17_21", how_many=10, title="COUNTIES BY POVERTY RATE")
+printTableBy(df, field="income21", how_many=10, title="COUNTIES BY PER CAPITA INCOME")
+printTableBy(df, field="three_yr_avg_unemp_rate19_21", how_many=10, title="COUNTIES BY AVERAGE UNEMPLOYMENT RATE")
 
 
 
