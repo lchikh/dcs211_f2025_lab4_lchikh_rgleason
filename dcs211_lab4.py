@@ -1,6 +1,63 @@
 
 import pandas as pd
+import matplotlib.pyplot as plt 
 from prettytable import PrettyTable as pt
+
+us_state_abbrev = {
+    'Alabama': 'AL',
+    'Alaska': 'AK',
+    'Arizona': 'AZ',
+    'Arkansas': 'AR',
+    'California': 'CA',
+    'Colorado': 'CO',
+    'Connecticut': 'CT',
+    'Delaware': 'DE',
+    'District of Columbia': 'DC',
+    'Florida': 'FL',
+    'Georgia': 'GA',
+    'Hawaii': 'HI',
+    'Idaho': 'ID',
+    'Illinois': 'IL',
+    'Indiana': 'IN',
+    'Iowa': 'IA',
+    'Kansas': 'KS',
+    'Kentucky': 'KY',
+    'Louisiana': 'LA',
+    'Maine': 'ME',
+    'Maryland': 'MD',
+    'Massachusetts': 'MA',
+    'Michigan': 'MI',
+    'Minnesota': 'MN',
+    'Mississippi': 'MS',
+    'Missouri': 'MO',
+    'Montana': 'MT',
+    'Nebraska': 'NE',
+    'Nevada': 'NV',
+    'New Hampshire': 'NH',
+    'New Jersey': 'NJ',
+    'New Mexico': 'NM',
+    'New York': 'NY',
+    'North Carolina': 'NC',
+    'North Dakota': 'ND',
+    'Ohio': 'OH',
+    'Oklahoma': 'OK',
+    'Oregon': 'OR',
+    'Pennsylvania': 'PA',
+    'Rhode Island': 'RI',
+    'South Carolina': 'SC',
+    'South Dakota': 'SD',
+    'Tennessee': 'TN',
+    'Texas': 'TX',
+    'Utah': 'UT',
+    'Vermont': 'VT',
+    'Virginia': 'VA',
+    'Washington': 'WA',
+    'West Virginia': 'WV',
+    'Wisconsin': 'WI',
+    'Wyoming': 'WY'
+}
+
+
 filename="county_economic_status_2024.csv"
 # skipping dscriptive rows at top and unecessary bottom rows
 df = pd.read_csv(filename, skiprows = 5, 
@@ -83,7 +140,7 @@ for i in range (10):
     counties_by_poverty_list=counties_by_poverty_list[:index] + counties_by_poverty_list[index+1:]
 print(table_three)
 
-def printTableBy(df: pd.DataFrame, field: str, how_many: int, title: str):
+def printTableBy(df: pd.DataFrame, field: str, how_many: int, title: str)-> None:
     """
     Prints a PrettyTable of the top and bottom 'how_many' counties
     based on a chosen field (e.g., 'poverty17_21', 'income21', or 'three_yr_avg_unemp_rate19_21').
@@ -98,7 +155,7 @@ def printTableBy(df: pd.DataFrame, field: str, how_many: int, title: str):
     
     title (str): Title printed above the PrettyTable.   
 
-    Returns: N/A
+    Returns: None
     """
 
     # Sort by selected column 
@@ -149,12 +206,69 @@ printTableBy(df, field="three_yr_avg_unemp_rate19_21", how_many=10, title="COUNT
 
 
 
+def createByStateBarPlot( df: pd.DataFrame, field: str, filename: str,title: str, ylabel: str)-> None:
+    """
+    Create and save a per-state bar plot of the mean values of a given specified field.
 
+    The function groups the provided DataFrame by 'state'. Then it computes the mean
+    of the specified numeric field and sorts the resulting means in ascending order.
+    Finally it produces a labeled bar plot using matplotlib. 
 
+    Args:
+        df (pd.DataFrame): The DataFrame containing county-level economic data.
+        
+        field (str): The column name (e.g., 'poverty17_21', 'income21', or'three_yr_avg_unemp_rate19_21') to compute and plot state means for.
+        
+        filename (str): The file path (e.g., 'pov_rate.png') to save the generated plot to.
+        
+        title (str): Title to display at the top of the figure.
+       
+        ylabel (str): Label for the y-axis, describing the plotted field.
+   
+    Returns: None
+    """
 
+    # Validate the column name
+    if field not in df.columns:
+        raise ValueError(f"Column '{field}' not found in DataFrame.")
 
+    # Group by state and calculate mean of the selected field
+    by_state = df.groupby("state")[field].mean().sort_values(ascending=True)
 
+    # Replace full state names with abbreviations
+    by_state.index = [us_state_abbrev[name] for name in by_state.index]
 
+    # Create the figure and set the size
+    plt.figure(figsize=(12, 6))
+
+    # Create the bar plot
+    plt.bar(by_state.index, by_state.values)
+
+    # Add title and labels
+    plt.title(title, fontsize=14, weight="bold")
+    plt.ylabel(ylabel, fontsize=12)
+    plt.xlabel("State", fontsize=12)
+
+    # Rotate x-axis labels for readability
+    plt.xticks(rotation=90, fontsize=9)
+
+    # Add gridlines for better readability
+    plt.grid(axis="y", linestyle="--", alpha=0.7)
+
+    # Adjust layout to avoid label cutoff
+    plt.tight_layout()
+
+    # Save the figure to file
+    plt.savefig(filename, dpi=300)
+
+    # Display the figure (optional for lab)
+    plt.show()
+
+#Call createByStateBarPlot Function 
+
+createByStateBarPlot(df, 'poverty17_21', "pov_rate.png", "States By Poverty Rate", "Poverty Rate")
+createByStateBarPlot(df, 'three_yr_avg_unemp_rate19_21', "unemp_rate.png", "States By Average Unemployment Rate", "Average Unemployment")
+createByStateBarPlot(df, 'income21', "pci.png", "States By Per Capita Income", "Per Capita Income")
 
 
 
