@@ -70,7 +70,7 @@ df.columns=["fips","state","county","arc_county","econ_status24","three_yr_avg_u
 #printing the mean median maximum and minimum of poverty rate across all file
 
 print(f"the mean of the the poverty rate is : {round(df['poverty17_21'].mean(), 2)}")
-print(f"the median of the the poverty rate is : {df['poverty17_21'].median()}")
+print(f"the standard deviation of the the poverty rate is : {df['poverty17_21'].std()}")
 print(f"the maximum of the the poverty rate is : {df['poverty17_21'].max()}")
 print(f"the minimum of the the poverty rate is : {df['poverty17_21'].min()}")
 
