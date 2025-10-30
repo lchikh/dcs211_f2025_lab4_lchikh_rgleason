@@ -67,6 +67,14 @@ df = df.reset_index(drop=True)
 #renaming the coumns to meaningful names
 df.columns=["fips","state","county","arc_county","econ_status24","three_yr_avg_unemp_rate19_21","income21","poverty17_21","three_yr_avg_unemp_rate_US19_21","PCMI_US21","PCMI_US_inv21","poverty_US17_21","comp_index_val24","index_val_rank24","quartile24"]
 
+#printing the mean median maximum and minimum of poverty rate across all file
+
+print(f"the mean of the the poverty rate is : {round(df['poverty17_21'].mean(), 2)}")
+print(f"the median of the the poverty rate is : {df['poverty17_21'].median()}")
+print(f"the maximum of the the poverty rate is : {df['poverty17_21'].max()}")
+print(f"the minimum of the the poverty rate is : {df['poverty17_21'].min()}")
+
+
 print(type(df["state"]))
 # type of df['states' is <class 'pandas.core.series.Series'>
 
