@@ -222,7 +222,7 @@ def createByStateBarPlot( df: pd.DataFrame, field: str, filename: str,title: str
     of the specified numeric field and sorts the resulting means in ascending order.
     Finally it produces a labeled bar plot using matplotlib. 
 
-    Args:
+    Parameters:
         df (pd.DataFrame): The DataFrame containing county-level economic data.
         
         field (str): The column name (e.g., 'poverty17_21', 'income21', or'three_yr_avg_unemp_rate19_21') to compute and plot state means for.
